@@ -17,6 +17,11 @@
 # limitations under the License.
 ################################################################################
 
+# CONFIG_FILE = "dstest1_pgie_config.txt"
+CONFIG_FILE = "config_infer_primary_yoloV5.txt"     # TODO
+OUTPUT_DIR = "/home/cyclope/iLori/repo/DeepStream_Test/pipeline_test/result/"    # TODO
+RUNTIME = 1     # TODO
+
 import time
 from timeit import timeit
 import numpy as np
@@ -35,12 +40,11 @@ from common.bus_call import bus_call
 
 import pyds
 
-PGIE_CLASS_ID_VEHICLE = 0
+PGIE_CLASS_ID_VEHICLE = 2
 PGIE_CLASS_ID_BICYCLE = 1
-PGIE_CLASS_ID_PERSON = 2
-PGIE_CLASS_ID_ROADSIGN = 3
+PGIE_CLASS_ID_PERSON = 0
+PGIE_CLASS_ID_ROADSIGN = 9
 
-OUTPUT_VIDEO_NAME = "/home/hjiang/out_2.mp4"
 
 def osd_sink_pad_buffer_probe(pad,info,u_data):
     frame_number=0
@@ -83,7 +87,10 @@ def osd_sink_pad_buffer_probe(pad,info,u_data):
                 obj_meta = pyds.NvDsObjectMeta.cast(l_obj.data)
             except StopIteration:
                 break
-            obj_counter[obj_meta.class_id] += 1
+
+            if obj_meta.class_id in obj_counter:
+                obj_counter[obj_meta.class_id] += 1
+
             try:
                 l_obj = l_obj.next
             except StopIteration:
@@ -325,7 +332,11 @@ def main(args):
     if not sink:
         sys.stderr.write(" Unable to create Sink")
 
-    sink.set_property("location", OUTPUT_VIDEO_NAME)
+    # Output video name
+    video_name = args[1].split("/")[-1]
+    output_video_name = OUTPUT_DIR + video_name
+
+    sink.set_property("location", output_video_name)
     sink.set_property("sync", 0)
     sink.set_property("async", 0)
     
@@ -354,7 +365,7 @@ def main(args):
     streammux.set_property("batch-size", 1)
     streammux.set_property("batched-push-timeout", 4000000)
     
-    pgie.set_property('config-file-path', "dstest1_pgie_config.txt")
+    pgie.set_property('config-file-path', CONFIG_FILE)
     
     print("Adding elements to Pipeline \n")
     # --pipeline.add(source)
@@ -502,7 +513,7 @@ if __name__ == '__main__':
     # time = timeit('main(sys.argv)', number = 50)
     # print('!!!Total execution time: ', time)
 
-    times = 50
+    times = RUNTIME
     time_list = []
     for i in range(times):
         start = time.time()
