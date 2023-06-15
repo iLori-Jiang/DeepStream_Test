@@ -25,6 +25,7 @@ RUNTIME = 1     # TODO
 import time
 from timeit import timeit
 import numpy as np
+import cv2
 
 import argparse
 import sys
@@ -360,8 +361,8 @@ def main(args):
 
     print("Playing file %s " % args[1])
     source.set_property("location", args[1])
-    streammux.set_property("width", 1920)
-    streammux.set_property("height", 1080)
+    streammux.set_property("width", WIDTH)
+    streammux.set_property("height", HEIGHT)
     streammux.set_property("batch-size", 1)
     streammux.set_property("batched-push-timeout", 4000000)
     
@@ -512,6 +513,10 @@ if __name__ == '__main__':
 
     # time = timeit('main(sys.argv)', number = 50)
     # print('!!!Total execution time: ', time)
+
+    cap = cv2.VideoCapture(sys.argv[1])
+    WIDTH = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+    HEIGHT = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
 
     times = RUNTIME
     time_list = []
