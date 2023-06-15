@@ -41,10 +41,9 @@ from common.bus_call import bus_call
 
 import pyds
 
-PGIE_CLASS_ID_VEHICLE = 2
-PGIE_CLASS_ID_BICYCLE = 1
-PGIE_CLASS_ID_PERSON = 0
-PGIE_CLASS_ID_ROADSIGN = 9
+PGIE_CLASS_ID_VEHICLE = 0
+PGIE_CLASS_ID_OBJECT = 1
+PGIE_CLASS_ID_PERSON = 2
 
 
 def osd_sink_pad_buffer_probe(pad,info,u_data):
@@ -53,8 +52,7 @@ def osd_sink_pad_buffer_probe(pad,info,u_data):
     obj_counter = {
         PGIE_CLASS_ID_VEHICLE:0,
         PGIE_CLASS_ID_PERSON:0,
-        PGIE_CLASS_ID_BICYCLE:0,
-        PGIE_CLASS_ID_ROADSIGN:0
+        PGIE_CLASS_ID_OBJECT:0,
     }
     num_rects=0
 
@@ -116,14 +114,14 @@ def osd_sink_pad_buffer_probe(pad,info,u_data):
 
         # Font , font-color and font-size
         py_nvosd_text_params.font_params.font_name = "Serif"
-        py_nvosd_text_params.font_params.font_size = 10
+        py_nvosd_text_params.font_params.font_size = 8
         # set(red, green, blue, alpha); set to White
-        py_nvosd_text_params.font_params.font_color.set(1.0, 1.0, 1.0, 1.0)
+        py_nvosd_text_params.font_params.font_color.set(1.0, 1.0, 1.0, 0.4)
 
         # Text background color
         py_nvosd_text_params.set_bg_clr = 1
         # set(red, green, blue, alpha); set to Black
-        py_nvosd_text_params.text_bg_clr.set(0.0, 0.0, 0.0, 1.0)
+        py_nvosd_text_params.text_bg_clr.set(0.0, 0.0, 0.0, 0.4)
         # Using pyds.get_string() to get display_text as string
         print(pyds.get_string(py_nvosd_text_params.display_text))
         pyds.nvds_add_display_meta_to_frame(frame_meta, display_meta)
