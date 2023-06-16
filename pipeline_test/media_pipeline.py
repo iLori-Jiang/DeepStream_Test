@@ -515,6 +515,7 @@ if __name__ == '__main__':
     cap = cv2.VideoCapture(sys.argv[1])
     WIDTH = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
     HEIGHT = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+    cap.release()
 
     times = RUNTIME
     time_list = []
@@ -531,10 +532,10 @@ if __name__ == '__main__':
     print("!!!Time List:")
     print(time_list)
 
-    # average_time = np.mean(time_list)
-    # print("!!!Average time: " average_time)
+    average_time = np.mean(time_list)
+    print("!!!Average time: ", average_time)
 
-    # std_time = np.std(time_list)
-    # print("!!!Variance: " std_time)
+    std_time = np.std(time_list)
+    print("!!!Variance: ", std_time)
 
     sys.exit(0)
